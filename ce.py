@@ -5,27 +5,29 @@ import os
 import sys
 
 
-
 yourinput = input("please add a key to encrypt: ")
 
 if len(yourinput) != 16:
     print("Error: please add just 16 characters !")
+    input("\nPress Enter to exit...") 
     sys.exit()
 
 key = yourinput.encode('ascii')
 
-path = input("please add your path file(just(.txt)): ")
+
+path = input("please add your path file(just(.txt)): ").strip('"').strip("'")
 
 counter = Counter.new(128)
-c = AES.new(key,AES.MODE_CTR,counter=counter)
-try:
-   with open(path,'r+b') as f:
-    plaintext = f.read(16)
+c = AES.new(key, AES.MODE_CTR, counter=counter)
 
-    while plaintext:
-        f.seek(-len(plaintext),1)
-        f.write(c.decrypt(plaintext))
-        plaintext=f.read(16)
+try:
+    with open(path, 'r+b') as f:
+        plaintext = f.read(16)
+
+        while plaintext:
+            f.seek(-len(plaintext), 1)
+            f.write(c.decrypt(plaintext))
+            plaintext = f.read(16)
 
     print("___________________________________________________________________________________")
     print("")
@@ -36,10 +38,11 @@ try:
 except FileNotFoundError:
     print("\nError: File not found! Please check the path and try again.")
 
-
 except PermissionError:
     print("\nError: Permission denied! You don't have the right to modify this file.")
 
-
 except Exception as e:
     print(f"\nUnexpected Error: {e}")
+
+
+input("\nPress Enter to exit...")
